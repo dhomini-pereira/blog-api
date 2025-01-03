@@ -1,0 +1,89 @@
+service: blog-api
+frameworkVersion: "3"
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: sa-east-1
+  environment:
+    TOKEN_ACCESS_KEY: ${env:TOKEN_ACCESS_KEY}
+    DATABASE_URL: ${env:DATABASE_URL}
+
+functions:
+  handler:
+    name: app-handler
+    handler: src/server.handler
+    memorySize: 10240
+    timeout: 900
+    events:
+      - http:
+          path: /docs
+          method: any
+      - http:
+          path: /api/user
+          method: GET
+      - http:
+          path: /api/user/{id}
+          method: GET
+      - http:
+          path: /api/user
+          method: PUT
+      - http:
+          path: /api/user/{id}
+          method: DELETE
+      - http:
+          path: /api/post
+          method: GET
+      - http:
+          path: /api/post
+          method: POST
+      - http:
+          path: /api/post/{id}
+          method: GET
+      - http:
+          path: /api/post/{id}
+          method: PUT
+      - http:
+          path: /api/post/{id}
+          method: DELETE
+      - http:
+          path: /api/auth/signup
+          method: POST
+      - http:
+          path: /api/auth/signin
+          method: POST
+      - http:
+          path: /api/comment
+          method: POST
+      - http:
+          path: /api/comment/{id}
+          method: DELETE
+      - http:
+          path: /api/comment/{id}
+          method: PUT
+      - http:
+          path: /api/comment
+          method: GET
+      - http:
+          path: /api/comment/{id}
+          method: GET
+      - http:
+          path: /api/role
+          method: GET
+      - http:
+          path: /api/role/{id}
+          method: GET
+      - http:
+          path: /api/role
+          method: POST
+      - http:
+          path: /api/role/{id}
+          method: PUT
+      - http:
+          path: /api/role/{id}
+          method: DELETE
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+  - serverless-dotenv-plugin
