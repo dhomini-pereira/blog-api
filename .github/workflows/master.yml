@@ -31,5 +31,5 @@ jobs:
           npm install --omit=dev
       - name: deploy
         run: |
-          zip -j deploy.zip ./*
+          zip -r deploy.zip ./*
           aws lambda update-function-code --function-name=blog-api --zip-file=fileb://deploy.zip 
