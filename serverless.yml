@@ -19,7 +19,13 @@ functions:
     events:
       - http:
           path: /docs
+          method: GET
+      - http:
+          path: /docs/static/{filename}
           method: any
+      - http:
+          path: /docs/json
+          method: GET
       - http:
           path: /api/user
           method: GET
