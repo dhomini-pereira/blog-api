@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "postgresql"
+  relationMode = "foreignKeys"
+  url          = env("DATABASE_URL")
+}
+
+model Role {
+  id          BigInt       @id @default(autoincrement())
+  name        String       @unique @db.VarChar(255)
+  description String       @db.VarChar(255)
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @default(now()) @updatedAt @map("updated_at")
+  permissions Permission[] @relation("roles_permissions")
+  users       User[]       @relation("users_roles")
+
+  @@map("roles")
+}
+
+model Permission {
+  id          BigInt @id @default(autoincrement())
+  name        String @unique @db.VarChar(255)
+  description String @db.VarChar(255)
+  roles       Role[] @relation("roles_permissions")
+
+  @@map("permissions")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String    @db.VarChar(255)
+  email     String    @unique
+  password  String
+  imageUrl  String?   @map("image_url") @db.VarChar(255)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  posts     Post[]
+  comments  Comment[]
+  roles     Role[]    @relation("users_roles")
+
+  @@index([email, password])
+  @@map("users")
+}
+
+model Post {
+  id        BigInt    @id @default(autoincrement())
+  title     String    @db.VarChar(255)
+  content   String    @db.Text()
+  bannerUrl String    @map("banner_url") @db.VarChar(255)
+  likes     BigInt    @default(1)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  userId    String?   @map("user_id")
+  author    User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  comments  Comment[]
+  flags     Flag[]    @relation("posts_flags")
+
+  @@map("posts")
+}
+
+model Comment {
+  id        BigInt   @id @default(autoincrement())
+  content   String   @db.VarChar(255)
+  likes     BigInt   @default(1)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  userId    String?  @map("user_id")
+  postId    BigInt   @map("post_id")
+  author    User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@map("comments")
+}
+
+model Flag {
+  id        BigInt   @id @default(autoincrement())
+  name      String   @unique @db.VarChar(100)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  posts     Post[]   @relation("posts_flags")
+
+  @@map("flags")
+}
