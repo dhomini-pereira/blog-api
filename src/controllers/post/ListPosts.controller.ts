@@ -17,58 +17,6 @@ export class ListPostsController {
     const page = queryParams.page;
     const order = queryParams.order;
 
-    const findMethod = {
-      select: {
-        id: true,
-        title: true,
-        content: true,
-        likes: true,
-        bannerUrl: true,
-        createdAt: true,
-        updatedAt: true,
-        author: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            imageUrl: true,
-          },
-        },
-        flags: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
-      where: {
-        OR: [
-          {
-            title: {
-              contains: queryParams.search,
-              mode: "insensitive",
-            },
-          },
-          {
-            content: {
-              contains: queryParams.search,
-              mode: "insensitive",
-            },
-          },
-        ],
-        flags: {
-          some: {
-            name: queryParams.flag,
-          },
-        },
-      },
-      orderBy: {
-        createdAt: order,
-      },
-      take: LIMIT,
-      skip: (page - 1) * LIMIT,
-    };
-
     const [posts, total] = await Promise.all([
       database.post.findMany({
         select: {
