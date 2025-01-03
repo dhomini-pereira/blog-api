@@ -24,6 +24,7 @@ jobs:
           CI: true
         run: |
           npm install
+          npm run build
           rm -rf src
           mv build src
           npx prisma generate
