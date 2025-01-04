@@ -48,7 +48,7 @@ Sincronizar o banco de dados com o modelo do Prisma:
 $ npx prisma db push
 ```
 
-Iniciar o servidor HTTP (Porta 3333):
+Iniciar o servidor HTTP (Porta 3000):
 
 ```ps
 $ npm run dev
