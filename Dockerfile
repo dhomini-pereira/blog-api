@@ -1,13 +1,11 @@
-FROM node:22-alpine as builder
+FROM node:22-alpine
 WORKDIR /usr/src/app
-COPY package.json ./
+COPY package.json ${LAMBDA_TASK_ROOT}
 RUN npm install
-ADD . .
+ADD . ${LAMBDA_TASK_ROOT}
 RUN npx prisma generate
 RUN npm run build
+RUN rm -rf src
+RUN mv build src
 RUN npm install --omit=dev
-
-FROM node:22-alpine
-WORKDIR ${LAMBDA_TASK_ROOT}
-COPY --from=builder /usr/src/app/build/* ./
-CMD [ "index.handler" ]
+CMD [ "src/server.handler" ]
