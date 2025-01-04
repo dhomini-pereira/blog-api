@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "serverless offline start --noPrependStageInUrl",
     "build": "tsc",
-    "start": "node ."
+    "start": "src/server.handler"
   },
   "keywords": [],
   "author": "dhomini-pereira",
