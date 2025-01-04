@@ -25,7 +25,7 @@ jobs:
           docker build -t blog-api .
       - name: Login to Amazon ECR
         run: |
-          aws ecr get-login-password --region sa-east-1 | docker login --username AWS --password-stdin ${{ secretsECR_ENDPOINT }}
+          aws ecr get-login-password --region sa-east-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_ENDPOINT }}
       - name: Tag Docker image
         run: |
           docker tag blog-api:latest ${{ secrets.ECR_REPOSITORY_URI }}:latest
