@@ -7,4 +7,4 @@ RUN npm run build
 RUN rm -rf src
 RUN mv build src
 RUN npm install --omit=dev
-CMD [ "npm", "start" ]
+CMD [ "src/server.handler" ]
