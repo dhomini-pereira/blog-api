@@ -1,6 +1,6 @@
 import "./types";
 import { fastify } from "fastify";
-// import { fastifyCors } from "@fastify/cors";
+import { fastifyCors } from "@fastify/cors";
 import {
   validatorCompiler,
   serializerCompiler,
@@ -23,7 +23,7 @@ export const handler = AWSLambda(
     app.setValidatorCompiler(validatorCompiler);
     app.setSerializerCompiler(serializerCompiler);
 
-    // app.register(fastifyCors, { origin: "*" });
+    app.register(fastifyCors, { origin: "*" });
 
     app.register(fastifySwagger, {
       openapi: {
