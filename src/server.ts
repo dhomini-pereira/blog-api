@@ -59,16 +59,6 @@ export const handler = AWSLambda(
       prefix: "/api/role",
     });
 
-    app.get("*", (request) => {
-      console.log("METHOD:", request.method);
-      console.log("IP:", request.ip);
-      console.log("HOSTNAME:", request.hostname);
-      console.log("HOST:", request.host);
-      console.log("ORIGINAL URL:",request.originalUrl);
-
-      console.log("REQUEST JSONIFY:", JSON.stringify(request))
-    });
-
     return app;
   })()
 );
