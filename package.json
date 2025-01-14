@@ -13,20 +13,20 @@
   "description": "",
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.7",
-    "@types/node": "^22.10.5",
+    "@types/node": "^22.10.6",
     "@types/sha256": "^0.2.2",
     "prisma": "^6.2.1",
     "serverless-dotenv-plugin": "^6.0.0",
     "serverless-offline": "^13.9.0",
     "serverless-plugin-typescript": "^2.1.5",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.3"
   },
   "dependencies": {
     "@fastify/aws-lambda": "^5.0.0",
     "@fastify/cors": "^10.0.2",
-    "@fastify/swagger": "^9.4.0",
-    "@fastify/swagger-ui": "^5.2.0",
+    "@fastify/swagger": "^9.4.1",
+    "@fastify/swagger-ui": "^5.2.1",
     "@prisma/client": "^6.2.1",
     "fastify": "^5.2.1",
     "fastify-type-provider-zod": "^4.0.2",
