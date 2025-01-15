@@ -22,9 +22,13 @@ jobs:
       - name: npm install
         env:
           CI: true
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          ADMIN_NAME: ${{ secrets.ADMIN_NAME }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
         run: |
           npm install
           npx prisma generate
+          npm run seed
           npm run build
           rm -rf src
           mv build src

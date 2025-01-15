@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "serverless offline start --noPrependStageInUrl",
     "build": "tsc",
-    "start": "src/server.handler"
+    "start": "src/server.handler",
+    "seed": "tsx prisma/seed.ts"
   },
   "keywords": [],
   "author": "dhomini-pereira",

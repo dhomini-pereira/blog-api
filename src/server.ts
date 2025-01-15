@@ -15,6 +15,7 @@ import { PostRoutes } from "./routes/post.routes";
 import { CommentRoutes } from "./routes/comment.routes";
 import { RoleRoutes } from "./routes/role.routes";
 import AWSLambda from "@fastify/aws-lambda";
+import { PermissionRoutes } from "./routes/permision.routes";
 
 export const handler = AWSLambda(
   (() => {
@@ -57,6 +58,10 @@ export const handler = AWSLambda(
 
     app.register(RoleRoutes.routes, {
       prefix: "/api/role",
+    });
+
+    app.register(PermissionRoutes.routes, {
+      prefix: "/api/permission",
     });
 
     return app;

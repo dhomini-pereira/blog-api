@@ -1,0 +1,67 @@
+{
+  "permissions": [
+    {
+      "id": 1,
+      "name": "CREATE_POST",
+      "description": "Create a new post"
+    },
+    {
+      "id": 2,
+      "name": "DELETE_POST",
+      "description": "Delete a post by id"
+    },
+    {
+      "id": 3,
+      "name": "UPDATE_POST",
+      "description": "Update a post by id"
+    },
+    {
+      "id": 4,
+      "name": "LIST_USERS",
+      "description": "List all users"
+    },
+    {
+      "id": 5,
+      "name": "LIST_ROLES",
+      "description": "List all roles"
+    },
+    {
+      "id": 6,
+      "name": "GET_ROLE",
+      "description": "Get a role by id"
+    },
+    {
+      "id": 7,
+      "name": "CREATE_ROLE",
+      "description": "Create a new role"
+    },
+    {
+      "id": 8,
+      "name": "DELETE_ROLE",
+      "description": "Delete a role by id"
+    },
+    {
+      "id": 9,
+      "name": "UPDATE_ROLE",
+      "description": "Update a role by id"
+    },
+    {
+      "id": 10,
+      "name": "LIST_PERMISSIONS",
+      "description": "List all permissions"
+    },
+    {
+      "id": 11,
+      "name": "GET_PERMISSION",
+      "description": "Get a permission by id"
+    }
+  ],
+  "roles": [
+    {
+      "id": 1,
+      "name": "ADMIN",
+      "description": "Administrator role",
+      "permissions": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    }
+  ]
+}
