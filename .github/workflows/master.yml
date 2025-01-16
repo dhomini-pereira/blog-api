@@ -9,16 +9,29 @@ jobs:
   deploy_lambda:
     runs-on: ubuntu-latest
     steps:
+      - name: Configurar QEMU para arm64
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: linux/arm64
+
+      - name: Configurar binfmt
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y binfmt-support qemu-user-static
+
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
-        with:  
+        with:
           node-version: '22'
-      - name: Configure AWS Credentials  
+          architecture: 'arm64'
+
+      - name: Configurar AWS Credentials  
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }} 
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: sa-east-1
+
       - name: npm install
         env:
           CI: true
@@ -33,6 +46,7 @@ jobs:
           rm -rf src
           mv build src
           npm install --omit=dev
+
       - name: deploy
         run: |
           zip -r deploy.zip ./*
