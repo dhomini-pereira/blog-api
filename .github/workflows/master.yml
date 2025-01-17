@@ -6,24 +6,7 @@ on:
       - master
 
 jobs:
-  setup:
-    runs-on: ubuntu-latest
-    outputs:
-      cache-key: ${{ steps.cache-dependencies.outputs.cache-hit }}
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: "22"
-      - name: Install dependencies
-        env:
-          CI: true
-        run: npm install
-      - name: Generate Prisma Client for Lambda
-        run: PRISMA_CLI_BINARY_TARGETS=linux-arm64-openssl-3.0.x npx prisma generate
-
   seed:
-    needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -45,7 +28,6 @@ jobs:
             sh -c "npm install && npx prisma generate && npm run seed"
 
   deploy:
-    needs: seed
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
