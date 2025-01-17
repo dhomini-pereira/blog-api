@@ -21,23 +21,12 @@ jobs:
         run: npm install
       - name: Generate Prisma Client for Lambda
         run: PRISMA_CLI_BINARY_TARGETS=linux-arm64-openssl-3.0.x npx prisma generate
-      - name: Cache dependencies
-        id: cache-dependencies
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
   seed:
     needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Restore dependencies cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
       - name: Run seed in Docker
         env:
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
@@ -63,11 +52,6 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "22"
-      - name: Restore dependencies cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -76,6 +60,8 @@ jobs:
           aws-region: sa-east-1
       - name: Prepare build
         run: |
+          npm install
+          PRISMA_CLI_BINARY_TARGETS=linux-arm64-openssl-3.0.x npx prisma generate
           npm run build
           rm -rf src
           mv build src
