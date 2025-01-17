@@ -42,8 +42,8 @@ jobs:
           aws-region: sa-east-1
       - name: Prepare build
         run: |
-          npm install
-          PRISMA_CLI_BINARY_TARGETS=linux-arm64-openssl-3.0.x npx prisma generate
+          PRISMA_CLI_BINARY_TARGETS=linux-arm64-openssl-3.0.x npm install
+          npx prisma generate
           npm run build
           rm -rf src
           mv build src
