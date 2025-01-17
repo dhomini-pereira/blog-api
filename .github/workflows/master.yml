@@ -28,7 +28,7 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           npm install
-          npx prisma generate
+          PRISMA_CLI_BINARY_TARGETS=native npx prisma generate
           npm run seed
           PRISMA_CLI_BINARY_TARGETS=linux-arm64-openssl-3.0.x npx prisma generate
           npm run build
