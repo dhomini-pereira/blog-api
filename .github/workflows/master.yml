@@ -25,10 +25,12 @@ jobs:
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
           ADMIN_NAME: ${{ secrets.ADMIN_NAME }}
           ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           npm install
-          npx prisma generate
+          PRISMA_CLI_BINARY_TARGETS=native npx prisma generate
           npm run seed
+          PRISMA_CLI_BINARY_TARGETS=linux-arm64-openssl-3.0.x npx prisma generate
           npm run build
           rm -rf src
           mv build src
