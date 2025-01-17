@@ -6,36 +6,81 @@ on:
       - master
 
 jobs:
-  deploy_lambda:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      cache-key: ${{ steps.cache-dependencies.outputs.cache-hit }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "22"
+      - name: Install dependencies
+        env:
+          CI: true
+        run: npm install
+      - name: Generate Prisma Client for Lambda
+        run: PRISMA_CLI_BINARY_TARGETS=linux-arm64-openssl-3.0.x npx prisma generate
+      - name: Cache dependencies
+        id: cache-dependencies
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+  seed:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Restore dependencies cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      - name: Run seed in Docker
+        env:
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          ADMIN_NAME: ${{ secrets.ADMIN_NAME }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          docker run --rm \
+            -v $(pwd):/app \
+            -w /app \
+            -e ADMIN_EMAIL \
+            -e ADMIN_NAME \
+            -e ADMIN_PASSWORD \
+            -e DATABASE_URL \
+            node:22 \
+            sh -c "npm install && npx prisma generate && npm run seed"
+
+  deploy:
+    needs: seed
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
           node-version: "22"
+      - name: Restore dependencies cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: sa-east-1
-      - name: npm install
-        env:
-          CI: true
-          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
-          ADMIN_NAME: ${{ secrets.ADMIN_NAME }}
-          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      - name: Prepare build
         run: |
-          npm install
-          npx prisma generate
-          npm run seed
-          PRISMA_CLI_BINARY_TARGETS=linux-arm64-openssl-3.0.x npx prisma generate
           npm run build
           rm -rf src
           mv build src
           npm install --omit=dev
-      - name: deploy
+      - name: Deploy to AWS Lambda
         run: |
           zip -r deploy.zip ./*
           aws lambda update-function-code --function-name=blog-api --zip-file=fileb://deploy.zip
