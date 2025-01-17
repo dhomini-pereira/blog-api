@@ -34,18 +34,17 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "22"
-      - name: Install dependencies
+      - name: Install dependencies for Layer
         run: |
-          mkdir lambda-layer
-          cd lambda-layer
-          mkdir nodejs
-          npm install --prefix nodejs --omit=dev
-          zip -r lambda-layer.zip nodejs
+          mkdir -p lambda-layer/nodejs
+          echo '{}' > lambda-layer/nodejs/package.json
+          npm install --prefix lambda-layer/nodejs --omit=dev
+          cd lambda-layer && zip -r lambda-layer.zip nodejs
       - name: Upload Lambda Layer
         run: |
           aws lambda publish-layer-version \
             --layer-name blog-layer \
-            --zip-file fileb://lambda-layer.zip \
+            --zip-file fileb://lambda-layer/lambda-layer.zip \
             --compatible-runtimes nodejs22.x \
             --region sa-east-1
 
