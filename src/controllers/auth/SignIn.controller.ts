@@ -28,7 +28,7 @@ export class SignInController {
       });
 
       if (!user)
-        return reply.status(401).send({ error: "Invalid credentials" });
+        return reply.status(403).send({ error: "Invalid credentials" });
 
       const token = jwt.sign(
         {
@@ -46,7 +46,7 @@ export class SignInController {
       return reply.status(200).send({ token });
     } catch (err) {
       if (err instanceof JsonWebTokenError) {
-        return reply.status(401).send({ error: "Invalid credentials" });
+        return reply.status(403).send({ error: "Invalid credentials" });
       }
       return reply.status(500).send({ error: "Internal server error" });
     }

@@ -26,7 +26,7 @@ export class UserRoutes {
           response: {
             200: z.array(
               z.object({
-                id: z.number(),
+                id: z.string(),
                 email: z.string(),
                 name: z.string(),
                 roles: z.array(
@@ -56,7 +56,7 @@ export class UserRoutes {
           }),
           response: {
             200: z.object({
-              id: z.number(),
+              id: z.string(),
               email: z.string(),
               name: z.string(),
               imageUrl: z.string().nullable(),

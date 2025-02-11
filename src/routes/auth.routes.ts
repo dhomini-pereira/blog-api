@@ -3,6 +3,8 @@ import { SignUpController } from "../controllers/auth/SignUp.controller";
 import { FastifyInstance } from "../types";
 import sha256 from "sha256";
 import { SignInController } from "../controllers/auth/SignIn.controller";
+import { GetUserInfoController } from "../controllers/auth/GetUserInfo.controller";
+import { AuthGuard } from "../guards/auth.guard";
 
 export class AuthRoutes {
   static routes(app: FastifyInstance) {
@@ -59,6 +61,35 @@ export class AuthRoutes {
         },
       },
       SignInController.handle
+    );
+
+    app.get(
+      "/user",
+      {
+        schema: {
+          tags: ["authentication"],
+          description: "Get your user info",
+          headers: z.object({
+            authorization: z.string(),
+          }),
+          response: {
+            200: z.object({
+              id: z.string(),
+              name: z.string(),
+              email: z.string().email(),
+              imageUrl: z.string().optional(),
+            }),
+            403: z.object({
+              error: z.string(),
+            }),
+            500: z.object({
+              error: z.string(),
+            }),
+          },
+        },
+        preHandler: [AuthGuard.handle],
+      },
+      GetUserInfoController.handle
     );
   }
 }
