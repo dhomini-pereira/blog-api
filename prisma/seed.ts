@@ -47,11 +47,21 @@ async function main() {
       email: process.env.ADMIN_EMAIL as string,
       name: process.env.ADMIN_NAME as string,
       password: sha256(process.env.ADMIN_PASSWORD as string),
+      roles: {
+        connect: {
+          id: 1,
+        },
+      },
     },
     update: {
       email: process.env.ADMIN_EMAIL as string,
       name: process.env.ADMIN_NAME as string,
       password: sha256(process.env.ADMIN_PASSWORD as string),
+      roles: {
+        connect: {
+          id: 1,
+        },
+      },
     },
   });
 }

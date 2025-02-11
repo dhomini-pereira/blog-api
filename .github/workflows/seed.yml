@@ -1,0 +1,28 @@
+name: AWS Lambda - Seed
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run seed in Docker
+        env:
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          ADMIN_NAME: ${{ secrets.ADMIN_NAME }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          docker run --rm \
+            -v $(pwd):/app \
+            -w /app \
+            -e ADMIN_EMAIL \
+            -e ADMIN_NAME \
+            -e ADMIN_PASSWORD \
+            -e DATABASE_URL \
+            node:22 \
+            sh -c "npm install && npx prisma generate && npm run seed"
