@@ -12,27 +12,30 @@ jobs:
       - name: Configurar QEMU para arm64
         uses: docker/setup-qemu-action@v2
         with:
-          platforms: linux/arm64
+          platforms: arm64
 
       - name: Configurar binfmt
         run: |
           sudo apt-get update
-          sudo apt-get install -y binfmt-support qemu-user-static
+          sudo apt-get install -y qemu-user-static
+          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: "22"
-          architecture: "arm64"
 
       - name: Configurar AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: sa-east-1
 
-      - name: npm install
+      - name: Instalar dependências e build
         env:
           CI: true
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
@@ -44,9 +47,11 @@ jobs:
           npm run build
           rm -rf src
           mv build src
-          npm install --omit=dev
+          npm ci --omit=dev
 
-      - name: deploy
+      - name: Criar pacote de deploy
+        run: zip -r deploy.zip ./*
+
+      - name: Deploy para AWS Lambda
         run: |
-          zip -r deploy.zip ./*
           aws lambda update-function-code --function-name=blog-api --zip-file=fileb://deploy.zip
