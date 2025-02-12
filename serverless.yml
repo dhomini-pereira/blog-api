@@ -51,6 +51,9 @@ functions:
           path: /api/auth/signin
           method: POST
       - http:
+          path: /api/auth/user
+          method: GET
+      - http:
           path: /api/comment
           method: POST
       - http:

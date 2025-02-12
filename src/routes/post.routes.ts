@@ -75,7 +75,6 @@ export class PostRoutes {
               author: z.object({
                 id: z.string(),
                 name: z.string(),
-                email: z.string(),
                 imageUrl: z.string().nullable(),
               }),
               flags: z.array(
@@ -118,7 +117,6 @@ export class PostRoutes {
                   author: z.object({
                     id: z.string(),
                     name: z.string(),
-                    email: z.string(),
                     imageUrl: z.string().nullable(),
                   }),
                   flags: z.array(

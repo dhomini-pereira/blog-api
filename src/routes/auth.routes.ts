@@ -69,15 +69,14 @@ export class AuthRoutes {
         schema: {
           tags: ["authentication"],
           description: "Get your user info",
-          headers: z.object({
-            authorization: z.string(),
-          }),
           response: {
             200: z.object({
               id: z.string(),
               name: z.string(),
               email: z.string().email(),
-              imageUrl: z.string().optional(),
+              imageUrl: z.string().nullable(),
+              createdAt: z.date(),
+              updatedAt: z.date(),
             }),
             403: z.object({
               error: z.string(),

@@ -18,7 +18,6 @@ export class GetPostController {
           select: {
             id: true,
             name: true,
-            email: true,
             imageUrl: true,
           },
         },

@@ -31,7 +31,6 @@ export class ListPostsController {
             select: {
               id: true,
               name: true,
-              email: true,
               imageUrl: true,
             },
           },
