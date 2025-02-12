@@ -1,4 +1,4 @@
-name: AWS Lambda - Deploy
+name: AWS Lambda - Deploy via S3
 
 on:
   push:
@@ -8,18 +8,8 @@ on:
 jobs:
   deploy_lambda:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Configurar QEMU para arm64
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: arm64
-
-      - name: Configurar binfmt
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y qemu-user-static
-          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-
       - name: Checkout do código
         uses: actions/checkout@v4
 
@@ -52,6 +42,11 @@ jobs:
       - name: Criar pacote de deploy
         run: zip -r deploy.zip src package.json node_modules package-lock.json
 
-      - name: Deploy para AWS Lambda
+      - name: Fazer upload para S3
         run: |
-          aws lambda update-function-code --function-name=blog-api --zip-file=fileb://deploy.zip
+          aws s3 cp deploy.zip s3://lambda-blog-api/deploy.zip
+
+      - name: Atualizar função AWS Lambda
+        run: |
+          aws lambda update-function-code --function-name blog-api \
+            --s3-bucket lambda-blog-api --s3-key deploy.zip
