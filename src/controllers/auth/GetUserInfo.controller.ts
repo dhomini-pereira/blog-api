@@ -1,23 +1,11 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { JsonWebTokenError, verify } from "jsonwebtoken";
+import { JsonWebTokenError } from "jsonwebtoken";
 import { database } from "../../configs/database";
-
-type TokenData = {
-  id: string;
-  email: string;
-  name: string;
-  imageUrl: string;
-};
 
 export class GetUserInfoController {
   static async handle(request: FastifyRequest, reply: FastifyReply) {
     try {
-      const token = request.headers.authorization as string;
-
-      const tokenData = verify(
-        token,
-        process.env.TOKEN_ACCESS_KEY as string
-      ) as TokenData;
+      const userId = request.userId;
 
       const user = await database.user.findUnique({
         select: {
@@ -29,8 +17,7 @@ export class GetUserInfoController {
           updatedAt: true,
         },
         where: {
-          id: tokenData.id,
-          email: tokenData.email,
+          id: userId,
         },
       });
 
