@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "src/server.js",
   "scripts": {
-    "dev": "serverless offline start --noPrependStageInUrl",
+    "dev": "serverless offline start --noPrependStageInUrl --reloadHandler",
     "build": "tsc",
     "start": "src/server.handler",
     "seed": "tsx prisma/seed.ts"
@@ -13,10 +13,10 @@
   "license": "MIT",
   "description": "",
   "devDependencies": {
-    "@types/jsonwebtoken": "^9.0.7",
-    "@types/node": "^22.10.7",
+    "@types/jsonwebtoken": "^9.0.8",
+    "@types/node": "^22.13.1",
     "@types/sha256": "^0.2.2",
-    "prisma": "^6.2.1",
+    "prisma": "^6.3.1",
     "serverless-dotenv-plugin": "^6.0.0",
     "serverless-offline": "^13.9.0",
     "serverless-plugin-typescript": "^2.1.5",
@@ -24,15 +24,13 @@
     "typescript": "^5.7.3"
   },
   "dependencies": {
-    "@fastify/aws-lambda": "^5.0.0",
+    "@fastify/aws-lambda": "^5.1.4",
     "@fastify/cors": "^10.0.2",
-    "@fastify/swagger": "^9.4.1",
-    "@fastify/swagger-ui": "^5.2.1",
-    "@prisma/client": "^6.2.1",
+    "@prisma/client": "^6.3.1",
     "fastify": "^5.2.1",
     "jsonwebtoken": "^9.0.2",
     "sha256": "^0.2.0",
-    "zod": "^3.24.1",
+    "zod": "^3.24.2",
     "fastify-type-provider-zod": "^4.0.2"
   }
 }
