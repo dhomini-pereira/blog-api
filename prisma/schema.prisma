@@ -41,6 +41,7 @@ model User {
   posts     Post[]
   comments  Comment[]
   roles     Role[]    @relation("users_roles")
+  likes     Like[]
 
   @@index([email, password])
   @@map("users")
@@ -51,7 +52,7 @@ model Post {
   title     String    @db.VarChar(255)
   content   String    @db.Text()
   bannerUrl String    @map("banner_url") @db.VarChar(255)
-  likes     BigInt    @default(1)
+  likes     Like[]
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
   userId    String?   @map("user_id")
@@ -60,6 +61,19 @@ model Post {
   flags     Flag[]    @relation("posts_flags")
 
   @@map("posts")
+}
+
+model Like {
+  id        BigInt   @id @default(autoincrement())
+  postId    BigInt
+  userId    String?
+  author    User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@index([postId, userId])
+  @@map("likes")
 }
 
 model Comment {

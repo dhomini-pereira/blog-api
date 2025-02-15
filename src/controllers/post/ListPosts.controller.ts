@@ -23,7 +23,11 @@ export class ListPostsController {
           id: true,
           title: true,
           content: true,
-          likes: true,
+          likes: {
+            select: {
+              id: true,
+            },
+          },
           bannerUrl: true,
           createdAt: true,
           updatedAt: true,
@@ -108,6 +112,11 @@ export class ListPostsController {
       }),
     ]);
 
-    return reply.status(200).send({ total, posts });
+    return reply
+      .status(200)
+      .send({
+        total,
+        posts: posts.map((p) => ({ ...p, likes: p.likes.length })),
+      });
   }
 }

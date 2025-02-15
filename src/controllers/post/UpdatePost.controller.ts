@@ -8,7 +8,7 @@ export class UpdatePostController {
     const data = request.body as {
       title?: string;
       content?: string;
-      likes?: number;
+      like?: boolean;
       bannerUrl?: string;
     };
 
@@ -41,10 +41,29 @@ export class UpdatePostController {
       data: {
         title: data.title,
         content: data.content,
-        likes: data.likes,
         bannerUrl: data.bannerUrl,
       },
     });
+
+    if (data.like != undefined) {
+      if (data.like) {
+        await database.like.deleteMany({
+          where: {
+            postId: params.id,
+            userId,
+          },
+        });
+      }
+
+      if (!data.like) {
+        await database.like.create({
+          data: {
+            postId: params.id,
+            userId,
+          },
+        });
+      }
+    }
 
     return reply.status(204).send();
   }

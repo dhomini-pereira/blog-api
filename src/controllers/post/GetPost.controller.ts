@@ -10,7 +10,11 @@ export class GetPostController {
         id: true,
         title: true,
         content: true,
-        likes: true,
+        likes: {
+          select: {
+            id: true,
+          },
+        },
         bannerUrl: true,
         createdAt: true,
         updatedAt: true,
@@ -35,6 +39,6 @@ export class GetPostController {
 
     if (!post) return reply.status(404).send({ error: "Post não encontrado" });
 
-    return reply.status(200).send(post);
+    return reply.status(200).send({ ...post, likes: post.likes.length });
   }
 }

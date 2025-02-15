@@ -70,6 +70,7 @@ export class PostRoutes {
               title: z.string(),
               content: z.string(),
               bannerUrl: z.string(),
+              likes: z.number(),
               createdAt: z.date(),
               updatedAt: z.date(),
               author: z.object({
@@ -110,7 +111,7 @@ export class PostRoutes {
                   id: z.bigint(),
                   title: z.string(),
                   content: z.string(),
-                  likes: z.bigint(),
+                  likes: z.number(),
                   bannerUrl: z.string(),
                   createdAt: z.date(),
                   updatedAt: z.date(),
@@ -149,7 +150,7 @@ export class PostRoutes {
           body: z.object({
             title: z.string().optional(),
             content: z.string().optional(),
-            likes: z.number().optional(),
+            like: z.boolean().optional(),
           }),
           response: {
             204: z.null(),
