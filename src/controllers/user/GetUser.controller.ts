@@ -8,7 +8,7 @@ export class GetUserController {
     const user = await database.user.findUnique({
       select: {
         id: true,
-        email: true,
+        email: false,
         name: true,
         password: false,
         imageUrl: true,

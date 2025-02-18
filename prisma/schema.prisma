@@ -31,17 +31,19 @@ model Permission {
 }
 
 model User {
-  id        String    @id @default(uuid())
-  name      String    @db.VarChar(255)
-  email     String    @unique
-  password  String
-  imageUrl  String?   @map("image_url") @db.VarChar(255)
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
-  posts     Post[]
-  comments  Comment[]
-  roles     Role[]    @relation("users_roles")
-  likes     Like[]
+  id                      String                    @id @default(uuid())
+  name                    String                    @db.VarChar(255)
+  email                   String                    @unique
+  password                String
+  imageUrl                String?                   @map("image_url") @db.VarChar(255)
+  createdAt               DateTime                  @default(now()) @map("created_at")
+  updatedAt               DateTime                  @default(now()) @updatedAt @map("updated_at")
+  posts                   Post[]
+  comments                Comment[]
+  roles                   Role[]                    @relation("users_roles")
+  likes                   Like[]
+  messages                Message[]
+  ConversationParticipant ConversationParticipant[]
 
   @@index([email, password])
   @@map("users")
@@ -53,6 +55,7 @@ model Post {
   content   String    @db.Text()
   bannerUrl String    @map("banner_url") @db.VarChar(255)
   likes     Like[]
+  shares    BigInt    @default(0)
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
   userId    String?   @map("user_id")
@@ -98,4 +101,39 @@ model Flag {
   posts     Post[]   @relation("posts_flags")
 
   @@map("flags")
+}
+
+model Conversation {
+  id           BigInt                    @id @default(autoincrement())
+  isGroup      Boolean                   @default(false)
+  name         String?                   @db.VarChar(255)
+  createdAt    DateTime                  @default(now()) @map("created_at")
+  updatedAt    DateTime                  @default(now()) @updatedAt @map("updated_at")
+  participants ConversationParticipant[]
+  messages     Message[]
+
+  @@map("conversations")
+}
+
+model ConversationParticipant {
+  conversationId BigInt       @map("conversation_id")
+  userId         String       @map("user_id")
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@id([conversationId, userId])
+  @@map("conversation_participants")
+}
+
+model Message {
+  id             BigInt       @id @default(autoincrement())
+  conversationId BigInt       @map("conversation_id")
+  authorId       String?      @map("author_id")
+  content        String       @db.Text()
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @default(now()) @updatedAt @map("updated_at")
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  author         User?        @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  @@map("messages")
 }
