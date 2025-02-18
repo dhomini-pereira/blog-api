@@ -31,19 +31,22 @@ model Permission {
 }
 
 model User {
-  id                      String                    @id @default(uuid())
-  name                    String                    @db.VarChar(255)
-  email                   String                    @unique
-  password                String
-  imageUrl                String?                   @map("image_url") @db.VarChar(255)
-  createdAt               DateTime                  @default(now()) @map("created_at")
-  updatedAt               DateTime                  @default(now()) @updatedAt @map("updated_at")
-  posts                   Post[]
-  comments                Comment[]
-  roles                   Role[]                    @relation("users_roles")
-  likes                   Like[]
-  messages                Message[]
-  ConversationParticipant ConversationParticipant[]
+  id            String         @id @default(uuid())
+  name          String         @db.VarChar(255)
+  email         String         @unique
+  password      String
+  imageUrl      String?        @map("image_url") @db.VarChar(255)
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @default(now()) @updatedAt @map("updated_at")
+  posts         Post[]
+  comments      Comment[]
+  roles         Role[]         @relation("users_roles")
+  likes         Like[]
+  messages      Message[]
+  conversations Conversation[]
+  notifications Notification[]
+  followers     Follow[]       @relation("followers")
+  following     Follow[]       @relation("following")
 
   @@index([email, password])
   @@map("users")
@@ -103,37 +106,56 @@ model Flag {
   @@map("flags")
 }
 
-model Conversation {
-  id           BigInt                    @id @default(autoincrement())
-  isGroup      Boolean                   @default(false)
-  name         String?                   @db.VarChar(255)
-  createdAt    DateTime                  @default(now()) @map("created_at")
-  updatedAt    DateTime                  @default(now()) @updatedAt @map("updated_at")
-  participants ConversationParticipant[]
+model Chat {
+  id           BigInt         @id @default(autoincrement())
+  isGroup      Boolean        @default(false)
+  name         String?        @db.VarChar(255)
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @default(now()) @updatedAt @map("updated_at")
+  participants Conversation[]
   messages     Message[]
 
+  @@map("chats")
+}
+
+model Conversation {
+  conversationId BigInt @map("conversation_id")
+  userId         String @map("user_id")
+  user           User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chat           Chat   @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@id([conversationId, userId])
   @@map("conversations")
 }
 
-model ConversationParticipant {
-  conversationId BigInt       @map("conversation_id")
-  userId         String       @map("user_id")
-  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-
-  @@id([conversationId, userId])
-  @@map("conversation_participants")
-}
-
 model Message {
-  id             BigInt       @id @default(autoincrement())
-  conversationId BigInt       @map("conversation_id")
-  authorId       String?      @map("author_id")
-  content        String       @db.Text()
-  createdAt      DateTime     @default(now()) @map("created_at")
-  updatedAt      DateTime     @default(now()) @updatedAt @map("updated_at")
-  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  author         User?        @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  id             BigInt   @id @default(autoincrement())
+  conversationId BigInt   @map("conversation_id")
+  authorId       String?  @map("author_id")
+  content        String   @db.Text()
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at")
+  chat           Chat     @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  author         User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
 
   @@map("messages")
+}
+
+model Notification {
+  id         BigInt  @id @default(autoincrement())
+  content    String
+  navigation String?
+  userId     String  @map("user_id")
+  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Follow {
+  followerId  String   @map("follower_id")
+  followingId String   @map("following_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  follower    User     @relation("followers", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User     @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@id([followerId, followingId])
+  @@map("follows")
 }
