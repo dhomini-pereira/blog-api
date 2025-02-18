@@ -109,7 +109,7 @@ model Flag {
 model Chat {
   id           BigInt         @id @default(autoincrement())
   isGroup      Boolean        @default(false)
-  name         String?        @db.VarChar(255)
+  name         String?        @db.VarChar(100)
   createdAt    DateTime       @default(now()) @map("created_at")
   updatedAt    DateTime       @default(now()) @updatedAt @map("updated_at")
   participants Conversation[]
