@@ -11,7 +11,7 @@ import { AuthRoutes } from "./routes/auth.routes";
 import { PostRoutes } from "./routes/post.routes";
 import { CommentRoutes } from "./routes/comment.routes";
 import { RoleRoutes } from "./routes/role.routes";
-import { PermissionRoutes } from "./routes/permision.routes";
+import { PermissionRoutes } from "./routes/permission.routes";
 import AWSLambda from "@fastify/aws-lambda";
 
 export const handler = AWSLambda(

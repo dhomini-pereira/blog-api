@@ -1,8 +1,8 @@
-import { CreateCommentController } from "../controllers/comments/CreateComment.controller";
-import { DeleteCommentController } from "../controllers/comments/DeleteComment.controller";
-import { GetCommentController } from "../controllers/comments/GetComment.controller";
-import { ListCommentsController } from "../controllers/comments/ListComments.controller";
-import { UpdateCommentController } from "../controllers/comments/UpdateComment.controller";
+import { CreateCommentController } from "../controllers/comment/CreateComment.controller";
+import { DeleteCommentController } from "../controllers/comment/DeleteComment.controller";
+import { GetCommentController } from "../controllers/comment/GetComment.controller";
+import { ListCommentsController } from "../controllers/comment/ListComments.controller";
+import { UpdateCommentController } from "../controllers/comment/UpdateComment.controller";
 import { AuthGuard } from "../guards/auth.guard";
 import { FastifyInstance } from "../types";
 import { z } from "zod";
@@ -21,21 +21,24 @@ export class CommentRoutes {
             postId: z.string().transform(Number),
           }),
           response: {
-            200: z.array(
-              z.object({
-                id: z.bigint(),
-                content: z.string(),
-                createdAt: z.date(),
-                updatedAt: z.date(),
-                likes: z.bigint(),
-                author: z.object({
-                  id: z.string(),
-                  name: z.string(),
-                  email: z.string(),
-                  imageUrl: z.string().nullable(),
-                }),
-              })
-            ),
+            200: z.object({
+              total: z.number(),
+              comments: z.array(
+                z.object({
+                  id: z.bigint(),
+                  content: z.string(),
+                  createdAt: z.date(),
+                  updatedAt: z.date(),
+                  likes: z.bigint(),
+                  author: z.object({
+                    id: z.string(),
+                    name: z.string(),
+                    email: z.string(),
+                    imageUrl: z.string().nullable(),
+                  }),
+                })
+              ),
+            }),
           },
         },
       },

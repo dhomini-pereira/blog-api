@@ -7,6 +7,7 @@ import { DeletePostController } from "../controllers/post/DeletePost.controller"
 import { GetPostController } from "../controllers/post/GetPost.controller";
 import { ListPostsController } from "../controllers/post/ListPosts.controller";
 import { UpdatePostController } from "../controllers/post/UpdatePost.controller";
+import { LikeController } from "../controllers/like/Like.controller";
 
 export class PostRoutes {
   static routes(app: FastifyInstance) {
@@ -49,7 +50,7 @@ export class PostRoutes {
             204: z.null(),
           },
         },
-        preHandler: [AuthGuard.handle, new CanDoGuard("DELETE_POST").handle],
+        preHandler: [AuthGuard.handle],
       },
       DeletePostController.handle
     );
@@ -71,6 +72,7 @@ export class PostRoutes {
               content: z.string(),
               bannerUrl: z.string(),
               likes: z.number(),
+              liked: z.boolean(),
               createdAt: z.date(),
               updatedAt: z.date(),
               author: z.object({
@@ -87,6 +89,7 @@ export class PostRoutes {
             }),
           },
         },
+        preHandler: [AuthGuard.handle],
       },
       GetPostController.handle
     );
@@ -111,7 +114,8 @@ export class PostRoutes {
                   id: z.bigint(),
                   title: z.string(),
                   content: z.string(),
-                  likes: z.number(),
+                  liked: z.boolean(),
+                  likes: z.bigint(),
                   bannerUrl: z.string(),
                   createdAt: z.date(),
                   updatedAt: z.date(),
@@ -131,6 +135,7 @@ export class PostRoutes {
             }),
           },
         },
+        preHandler: [AuthGuard.handle],
       },
       ListPostsController.handle
     );
@@ -150,7 +155,6 @@ export class PostRoutes {
           body: z.object({
             title: z.string().optional(),
             content: z.string().optional(),
-            like: z.boolean().optional(),
           }),
           response: {
             204: z.null(),
@@ -158,9 +162,25 @@ export class PostRoutes {
             404: z.object({ error: z.string() }),
           },
         },
-        preHandler: [AuthGuard.handle, new CanDoGuard("UPDATE_POST").handle],
+        preHandler: [AuthGuard.handle],
       },
       UpdatePostController.handle
+    );
+
+    app.put(
+      "/:id/like",
+      {
+        schema: {
+          params: z.object({
+            id: z.string().transform(Number),
+          }),
+          response: {
+            204: z.null(),
+          },
+        },
+        preHandler: [AuthGuard.handle],
+      },
+      LikeController.handle
     );
   }
 }

@@ -26,6 +26,7 @@ export class ListPostsController {
           likes: {
             select: {
               id: true,
+              userId: true,
             },
           },
           bannerUrl: true,
@@ -112,11 +113,13 @@ export class ListPostsController {
       }),
     ]);
 
-    return reply
-      .status(200)
-      .send({
-        total,
-        posts: posts.map((p) => ({ ...p, likes: p.likes.length })),
-      });
+    return reply.status(200).send({
+      total,
+      posts: posts.map((p) => ({
+        ...p,
+        likes: p.likes.length,
+        liked: p.likes.some((like) => like.userId === request.userId),
+      })),
+    });
   }
 }

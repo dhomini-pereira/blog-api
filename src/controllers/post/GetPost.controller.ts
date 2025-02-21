@@ -13,6 +13,7 @@ export class GetPostController {
         likes: {
           select: {
             id: true,
+            userId: true,
           },
         },
         bannerUrl: true,
@@ -39,6 +40,12 @@ export class GetPostController {
 
     if (!post) return reply.status(404).send({ error: "Post não encontrado" });
 
-    return reply.status(200).send({ ...post, likes: post.likes.length });
+    return reply
+      .status(200)
+      .send({
+        ...post,
+        likes: post.likes.length,
+        liked: post.likes.some((p) => p.userId === request.userId),
+      });
   }
 }

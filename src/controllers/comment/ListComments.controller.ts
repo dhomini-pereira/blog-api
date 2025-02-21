@@ -13,7 +13,7 @@ export class ListCommentsController {
   static async handle(request: FastifyRequest, reply: FastifyReply) {
     const query = request.query as QueryInput;
 
-    const comments = await database.comment.findMany({
+    const commentsP = database.comment.findMany({
       where: {
         postId: query.postId,
       },
@@ -39,6 +39,14 @@ export class ListCommentsController {
       take: LIMIT,
     });
 
-    return reply.status(200).send(comments);
+    const totalP = database.comment.count({
+      where: {
+        postId: query.postId,
+      },
+    });
+
+    const [comments, total] = await Promise.all([commentsP, totalP]);
+
+    return reply.status(200).send({ total, comments });
   }
 }

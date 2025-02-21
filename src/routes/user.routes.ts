@@ -6,6 +6,7 @@ import { CanDoGuard } from "../guards/can-do.guard";
 import { GetUserController } from "../controllers/user/GetUser.controller";
 import { DeleteUserController } from "../controllers/user/DeleteUser.controller";
 import { UpdateUserController } from "../controllers/user/UpdateUser.controller";
+import { FollowController } from "../controllers/follow/Follow.controller";
 
 export class UserRoutes {
   static routes(app: FastifyInstance) {
@@ -125,6 +126,22 @@ export class UserRoutes {
         preHandler: [AuthGuard.handle],
       },
       UpdateUserController.handle
+    );
+
+    app.put(
+      "/follow/:id",
+      {
+        schema: {
+          params: z.object({
+            id: z.string(),
+          }),
+          response: {
+            204: z.null(),
+          },
+        },
+        preHandler: [AuthGuard.handle],
+      },
+      FollowController.handle
     );
   }
 }

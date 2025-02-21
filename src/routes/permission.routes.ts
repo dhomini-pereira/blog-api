@@ -1,5 +1,5 @@
-import { GetPermissionController } from "../controllers/permissions/GetPermission.controller";
-import { ListPermissionsController } from "../controllers/permissions/ListPermissions.controller";
+import { GetPermissionController } from "../controllers/permission/GetPermission.controller";
+import { ListPermissionsController } from "../controllers/permission/ListPermissions.controller";
 import { AuthGuard } from "../guards/auth.guard";
 import { CanDoGuard } from "../guards/can-do.guard";
 import { FastifyInstance } from "../types";
