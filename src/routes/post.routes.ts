@@ -41,6 +41,9 @@ export class PostRoutes {
         schema: {
           tags: ["posts"],
           description: "Delete a post",
+          headers: z.object({
+            authorization: z.string(),
+          }),
           params: z.object({
             id: z.string().transform(Number),
           }),
@@ -61,6 +64,9 @@ export class PostRoutes {
         schema: {
           tags: ["posts"],
           description: "Get a post",
+          headers: z.object({
+            authorization: z.string(),
+          }),
           params: z.object({
             id: z.string().transform(Number),
           }),
@@ -100,6 +106,9 @@ export class PostRoutes {
         schema: {
           tags: ["posts"],
           description: "List posts",
+          headers: z.object({
+            authorization: z.string(),
+          }),
           querystring: z.object({
             page: z.string().optional().default("1").transform(Number),
             order: z.enum(["desc", "asc"]).optional().default("desc"),
@@ -115,7 +124,7 @@ export class PostRoutes {
                   title: z.string(),
                   content: z.string(),
                   liked: z.boolean(),
-                  likes: z.bigint(),
+                  likes: z.number(),
                   bannerUrl: z.string(),
                   createdAt: z.date(),
                   updatedAt: z.date(),
@@ -171,6 +180,11 @@ export class PostRoutes {
       "/:id/like",
       {
         schema: {
+          tags: ["posts"],
+          description: "Like a post",
+          headers: z.object({
+            authorization: z.string(),
+          }),
           params: z.object({
             id: z.string().transform(Number),
           }),
